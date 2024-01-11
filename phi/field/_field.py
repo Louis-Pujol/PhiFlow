@@ -13,14 +13,14 @@ from phiml.math.magic import BoundDim
 class Field:
     """
     Base class for all fields.
-    
+
     Important implementations:
-    
+
     * CenteredGrid
     * StaggeredGrid
     * PointCloud
     * Noise
-    
+
     See the `phi.field` module documentation at https://tum-pbs.github.io/PhiFlow/Fields.html
     """
 
@@ -28,7 +28,7 @@ class Field:
     def shape(self) -> Shape:
         """
         Returns a shape with the following properties
-        
+
         * The spatial dimension names match the dimensions of this Field
         * The batch dimensions match the batch dimensions of this Field
         * The channel dimensions match the channels of this Field
@@ -138,20 +138,26 @@ class Field:
     @property
     def is_grid(self):
         """ `isinstance(self, Grid)`. Added for forward compatibility with 2.5. """
-        from ._grid import Grid
-        return isinstance(self, Grid)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            from ._grid import Grid
+            return isinstance(self, Grid)
 
     @property
     def is_point_cloud(self):
         """ `isinstance(self, PointCloud)`. Added for forward compatibility with 2.5. """
-        from ._point_cloud import PointCloud
-        return isinstance(self, PointCloud)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            from ._point_cloud import PointCloud
+            return isinstance(self, PointCloud)
 
     @property
     def is_staggered(self):
         """ Whether the field values are sampled between elements. Added for forward compatibility with 2.5. """
-        from ._grid import StaggeredGrid
-        return isinstance(self, StaggeredGrid)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            from ._grid import StaggeredGrid
+            return isinstance(self, StaggeredGrid)
 
     @property
     def is_centered(self):
@@ -229,9 +235,9 @@ class SampledField(Field):
         """
         Returns a geometrical representation of the discrete volume elements.
         The result is a tuple of Geometry objects, each of which can have additional spatial (but not batch) dimensions.
-        
+
         For grids, the geometries are boxes while particle fields may be represented as spheres.
-        
+
         If this Field has no discrete points, this method returns an empty geometry.
         """
         return self._elements
